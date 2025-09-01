@@ -1,9 +1,9 @@
+
+/* Tailwind CSS CDN for quick prototyping */
+@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   background: #f3f4f6;
 }
-
-/* Tailwind CSS CDN for quick prototyping */
-@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');

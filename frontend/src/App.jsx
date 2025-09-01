@@ -8,9 +8,20 @@ function App() {
   const fileInput = useRef();
 
   const fetchFiles = async () => {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    setFiles(data);
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setFiles(data);
+      } else {
+        setFiles([]);
+        // Optionally, show an error message to the user
+        console.error('Error fetching files:', data.error || data);
+      }
+    } catch (err) {
+      setFiles([]);
+      console.error('Network or server error:', err);
+    }
   };
 
   useEffect(() => {
@@ -48,6 +59,18 @@ function App() {
     fetchFiles();
   };
 
+  const handleDelete = async (key) => {
+    if (!confirm('Are you sure you want to delete this file?')) return;
+    try {
+      await fetch(`${API_URL}/${key}`, {
+        method: 'DELETE',
+      });
+      fetchFiles(); // Refresh the file list
+    } catch (err) {
+      console.error('Error deleting file:', err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
       <h1 className="text-2xl font-bold mb-4">File Viewer</h1>
@@ -79,15 +102,22 @@ function App() {
           {files.map(f => (
             <li key={f.key} className="flex justify-between items-center border-b py-2">
               <span className="truncate max-w-xs">{f.key}</span>
-              <a
-                href={f.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline ml-2"
-                download
-              >
-                Download
-              </a>
+              <div className="flex gap-2">
+                <a
+                  href={f.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View
+                </a>
+                <button
+                  onClick={() => handleDelete(f.key)}
+                  className="text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

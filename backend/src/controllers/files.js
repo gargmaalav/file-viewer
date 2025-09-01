@@ -1,7 +1,8 @@
 import {
   s3Upload,
   s3ListFiles,
-  s3Download
+  s3Download,
+  s3Delete
 } from '../utils/s3.js';
 
 export const uploadFile = async (req, res) => {
@@ -29,6 +30,16 @@ export const downloadFile = async (req, res) => {
     const key = req.params.key;
     const fileStream = await s3Download(key);
     fileStream.pipe(res);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deleteFile = async (req, res) => {
+  try {
+    const key = req.params.key;
+    await s3Delete(key);
+    res.json({ message: 'File deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
